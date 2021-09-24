@@ -1,6 +1,6 @@
+import { fbApp } from "fbase";
+import { getAuth, updateProfile } from "@firebase/auth";
 //import { where, orderBy, query, getDocs } from "@firebase/firestore";
-import { updateProfile } from "@firebase/auth";
-import { authService } from "fbase";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 //import Nweet from "components/Nweet";
@@ -11,7 +11,7 @@ const Profile = ({ userObj, refreshUser }) => {
   //const [nweets, setNweets] = useState([]);
 
   const onLogOutClick = () => {
-    authService.signOut();
+    getAuth(fbApp).signOut();
     history.push("/");
   };
 
@@ -25,7 +25,7 @@ const Profile = ({ userObj, refreshUser }) => {
   const onSubmit = async (event) => {
     event.preventDefault();
     if (userObj.displayName !== newDisplayName) {
-      await updateProfile(authService.currentUser, {
+      await updateProfile(getAuth(fbApp).currentUser, {
         displayName: newDisplayName,
       });
       refreshUser();

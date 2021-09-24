@@ -1,14 +1,14 @@
+import { fbApp } from "fbase";
+import { getAuth, onAuthStateChanged, updateProfile } from "@firebase/auth";
 import { useEffect, useState } from "react";
 import AppRouter from "components/Router";
-import { authService, onAuthStateChanged } from "fbase";
-import { updateProfile } from "@firebase/auth";
 
 function App() {
   const [init, setInit] = useState(false);
   const [userObj, setUserObj] = useState(null);
 
   useEffect(() => {
-    onAuthStateChanged(authService, (user) => {
+    onAuthStateChanged(getAuth(fbApp), (user) => {
       if (user) {
         setUserObj({
           uid: user.uid,
@@ -23,7 +23,7 @@ function App() {
   }, []);
 
   const refreshUser = () => {
-    const user = authService.currentUser;
+    const user = getAuth(fbApp).currentUser;
     setUserObj({
       uid: user.uid,
       displayName: user.displayName,

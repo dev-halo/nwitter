@@ -1,8 +1,9 @@
+import { fbApp } from "fbase";
 import {
-  authService,
   createUserWithEmailAndPassword,
+  getAuth,
   signInWithEmailAndPassword,
-} from "fbase";
+} from "@firebase/auth";
 import { useState } from "react";
 
 const AuthForm = () => {
@@ -26,9 +27,9 @@ const AuthForm = () => {
     event.preventDefault();
     try {
       if (newAccount) {
-        await createUserWithEmailAndPassword(authService, email, password);
+        await createUserWithEmailAndPassword(getAuth(fbApp), email, password);
       } else {
-        await signInWithEmailAndPassword(authService, email, password);
+        await signInWithEmailAndPassword(getAuth(fbApp), email, password);
       }
     } catch (error) {
       setError(error.message);

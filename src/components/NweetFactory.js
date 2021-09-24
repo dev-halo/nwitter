@@ -1,7 +1,13 @@
+import { fbApp } from "fbase";
+import { getFirestore, collection, addDoc } from "@firebase/firestore";
+import {
+  getStorage,
+  ref,
+  getDownloadURL,
+  uploadString,
+} from "@firebase/storage";
 import { useState } from "react";
-import { dbService, collection, addDoc, storageService, ref } from "fbase";
 import { v4 as uuidv4 } from "uuid";
-import { getDownloadURL, uploadString } from "@firebase/storage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 
@@ -16,7 +22,10 @@ const NweetFactory = ({ userObj }) => {
     }
     let attachmentUrl = "";
     if (attachment !== "") {
-      const attachmentRef = ref(storageService, `${userObj.uid}/${uuidv4()}`);
+      const attachmentRef = ref(
+        getStorage(fbApp),
+        `${userObj.uid}/${uuidv4()}`
+      );
       const response = await uploadString(
         attachmentRef,
         attachment,
@@ -24,7 +33,7 @@ const NweetFactory = ({ userObj }) => {
       );
       attachmentUrl = await getDownloadURL(response.ref);
     }
-    await addDoc(collection(dbService, "nweets"), {
+    await addDoc(collection(getFirestore(fbApp), "nweets"), {
       text: nweet,
       createdAt: Date.now(),
       creatorId: userObj.uid,

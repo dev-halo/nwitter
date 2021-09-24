@@ -1,5 +1,6 @@
-import { deleteObject, ref } from "@firebase/storage";
-import { dbService, deleteDoc, doc, storageService, updateDoc } from "fbase";
+import { fbApp } from "fbase";
+import { getFirestore, doc, updateDoc, deleteDoc } from "@firebase/firestore";
+import { getStorage, deleteObject, ref } from "@firebase/storage";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
@@ -11,11 +12,11 @@ const Nweet = ({ nweetObj, isOwner }) => {
   const onDeleteClick = async () => {
     const ok = window.confirm("삭제하시겠습니까?");
     if (ok) {
-      const docRef = doc(dbService, `nweets/${nweetObj.id}`);
+      const docRef = doc(getFirestore(fbApp), `nweets/${nweetObj.id}`);
       await deleteDoc(docRef);
 
       if (nweetObj.attachmentUrl !== "") {
-        deleteObject(ref(storageService, nweetObj.attachmentUrl));
+        deleteObject(ref(getStorage(fbApp), nweetObj.attachmentUrl));
       }
     }
   };
@@ -31,7 +32,7 @@ const Nweet = ({ nweetObj, isOwner }) => {
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    const docRef = doc(dbService, `nweets/${nweetObj.id}`);
+    const docRef = doc(getFirestore(fbApp), `nweets/${nweetObj.id}`);
     await updateDoc(docRef, { text: newNweet });
     setEditing(false);
   };
